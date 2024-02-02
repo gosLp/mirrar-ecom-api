@@ -15,7 +15,7 @@ model Product {
     name String 
     description String?
     price Float?
-    variants ProductVariant[]
+    variants ProductVariant[] 
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -25,10 +25,12 @@ model Product {
 model ProductVariant {
     id String @id @default(uuid())
     name String
+    color String?
+    size String?
     sku String?
     additionalCost Float?
     stockCount Int? 
-    product Product @relation(fields: [productId], references: [id])
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId String
     
     createdAt DateTime @default(now())

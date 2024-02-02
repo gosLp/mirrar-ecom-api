@@ -4,6 +4,12 @@ import {Type} from 'class-transformer';
 export class VariantDto{
     @IsString()
     name: string;
+
+    @IsString()
+    size: string;
+
+    @IsString()
+    color: string;
     
     @IsNumber()
     additionalCost: number;

@@ -28,4 +28,64 @@ export class ProductService {
             }
         })
     }
+
+    async search(q: string): Promise<Product[]>{
+        return await this.prisma.product.findMany({
+            where: {
+                OR:[
+                    {
+                        name: {
+                            contains: q,
+                            mode: 'insensitive'
+                        },
+                    },
+                    {
+                        description:{
+                            contains: 'q',
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        variants: {
+                            some: {
+                                name:{
+                                    contains: q,
+                                    mode: 'insensitive'
+                                },
+
+                            }
+                        },
+                        
+                    },
+                    {
+                        variants:{
+                            some: {
+                                sku:{
+                                    contains: q,
+                                    mode: 'insensitive',
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            include: {
+                variants: true,
+            }
+        })
+
+    }
+
+
+    async deleteProductById(productId: string):Promise<Product>{
+        return await this.prisma.product.delete({
+            where:{
+                id: productId,
+            },
+            include:{
+                variants: true,
+            }
+        })
+    }
+
 }
