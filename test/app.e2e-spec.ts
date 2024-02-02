@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import * as pactum from 'pactum';
-import { CreateProductDto } from 'src/product/dto';
+import { CreateProductDto, UpdateProductDto } from 'src/product/dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -75,7 +75,6 @@ describe('AppController (e2e)', () => {
           .withHeaders({})
           .withBody(dto)
           .expectStatus(201)
-          .stores('productId', 'id')
       })
     });
 
@@ -85,11 +84,27 @@ describe('AppController (e2e)', () => {
           .spec()
           .get('/product')
           .withHeaders({})
+          .stores('productId', '[0].id')
+          .stores('variantId', 'variant[0].id')
           .expectStatus(200)
           .expectJsonLength(1);
       })
+    });
+
+    describe('Search for Product', ()=>{
+      it('should search for products on query string', ()=>{
+        return pactum
+          .spec()
+          .get('/product')
+          .withHeaders({})
+          .withQueryParams({q: 'shirt'})
+          .stores('productId', 'body[0].id')
+          .expectStatus(200)
+      });
+
+      
+
+
     })
   })
-
-  
 });

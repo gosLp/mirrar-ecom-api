@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Patch, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateProductDto } from './dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
@@ -32,7 +32,7 @@ export class ProductController {
             return await this.productService.getAllProducts();
         }
     
-        @Put(':id')
+        @Patch(':id')
         @UsePipes(ValidationPipe)
         async update(
             @Param('id', ParseUUIDPipe)productId: string,
