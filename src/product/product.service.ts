@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Product, ProductVariant } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { skuGenerator } from './utils';
