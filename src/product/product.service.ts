@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Product, ProductVariant } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { skuGenerator } from './utils';
 
 @Injectable()
@@ -27,6 +28,10 @@ export class ProductService {
                 }
             }
         })
+    }
+
+    async getAllProducts(): Promise<Product[]>{
+        return await this.prisma.product.findMany();
     }
 
     async search(q: string): Promise<Product[]>{
@@ -84,6 +89,49 @@ export class ProductService {
             },
             include:{
                 variants: true,
+            }
+        })
+    }
+
+    async updateProductById(productId: string, data:UpdateProductDto): Promise<Product>{
+
+        const {name, description, price, variants} = data;
+
+        const skus = variants.map((variant) => skuGenerator(name, variant));
+        console.log("data is:", data);
+
+        return await this.prisma.product.update({
+            where: {
+                id: productId, 
+            },
+            data:{
+                name,
+                description,
+                price,
+                variants: {
+                    // Use upsert for variants that have an id
+                    upsert: variants
+                        .filter((variant) => variant.id)    
+                        .map((variant, index)=>({
+                        create: {
+                            ...variant,
+                            sku: skus[index],
+                        },
+                        update: {
+                            ...variant,
+                            sku: skus[index],
+                        },
+                        where:{
+                            id: variant.id
+                        }
+                    })),
+                    //use for variants that do not have an id
+                    create: variants.filter((variant)=> !variant.id)
+                            .map((variant, index)=>({
+                                ...variant,
+                                sku:skus[index],
+                            }))
+                }
             }
         })
     }

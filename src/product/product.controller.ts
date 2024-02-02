@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, ParseUUIDPipe, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateProductDto } from './dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
 
 @Controller('product')
@@ -25,5 +26,17 @@ export class ProductController {
         async searchProduct(@Query('q') q: string){
             return await this.productService.search(q);
         }
+
+        @Get()
+        async getallProducts(){
+            return await this.productService.getAllProducts();
+        }
     
+        @Put(':id')
+        @UsePipes(ValidationPipe)
+        async update(
+            @Param('id', ParseUUIDPipe)productId: string,
+            @Body() data: UpdateProductDto){
+                return await this.productService.updateProductById(productId, data);
+            }
 }

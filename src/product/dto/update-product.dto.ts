@@ -1,9 +1,13 @@
-import {IsString, IsNumber, IsArray, ValidateNested, IsUUID} from 'class-validator';
-import {Type} from 'class-transformer';
+import {IsString, IsNumber, IsArray, ValidateNested, IsUUID, IsOptional } from 'class-validator'
+import { Type } from 'class-transformer';
 
-export class VariantDto{
+export class UpdateVariantDto{
+    @IsUUID()
+    @IsOptional()
+    id: string;
 
     @IsString()
+    @IsOptional()
     name: string;
 
     @IsString()
@@ -19,8 +23,7 @@ export class VariantDto{
     stockCount: number;
 }
 
-export class CreateProductDto{
-
+export class UpdateProductDto{
     @IsString()
     name: string;
 
@@ -33,6 +36,6 @@ export class CreateProductDto{
 
     @IsArray()
     @ValidateNested({each: true})
-    @Type(() => VariantDto)
-    variants: VariantDto[];
+    @Type(() => UpdateVariantDto)
+    variants: UpdateVariantDto[];
 }
